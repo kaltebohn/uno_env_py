@@ -121,7 +121,7 @@ class State:
                 # チャレンジが成功したら、チャレンジされたプレイヤのカードを場から戻し、4枚引かせ、手番を戻す。
 
                 # 場のカードをチャレンジされたプレイヤに戻す。
-                next_state.player_hands[challenged_player].append(deepcopy(self.discards[-1]))
+                next_state.player_hands[challenged_player].append(self.discards[-1])
                 next_state.update_table_card(prev_table_card)
                 del next_state.discards[-1]
 
@@ -345,7 +345,7 @@ class State:
         assert card in self.player_hands[player]
 
         self.update_table_card(card)
-        self.discards.append(deepcopy(card))
+        self.discards.append(card)
         idx = self.player_hands[player].index(card)
         del self.player_hands[player][idx]
 
