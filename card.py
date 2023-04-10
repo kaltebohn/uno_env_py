@@ -71,6 +71,18 @@ class Card:
     def is_empty(self) -> bool:
         return self.color == Color.NONE
 
+    def to_score(self) -> int:
+        if self.number != Number.NONE:
+            return self.number.value
+        elif self.action in [Action.DRAW_TWO, Action.REVERSE, Action.SKIP]:
+            return 20
+        elif self.action in [Action.WILD_SHUFFLE_HANDS, Action.WILD_CUSTOMIZABLE]:
+            return 40
+        elif self.action in [Action.WILD, Action.WILD_DRAW_4]:
+            return 50
+        # ここに到達したらロジックがが誤っている。
+        assert False
+
     @classmethod
     def empty(cls):
         return Card(Color.NONE, Number.NONE, Action.NONE)

@@ -236,17 +236,28 @@ class State:
         return any([len(player_hand) == 0 for player_hand in self.player_hands])
 
     def player_scores(self) -> list[int]:
+        """各プレイヤの得点をリストで返す。
+
+        Returns:
+            list[int]: 各プレイヤの得点。プレイヤ番号をインデックスとしてアクセス。
+        """
         scores = [0 for _ in range(consts.NUM_OF_PLAYERS)]
+        sum_score = 0
         if not self.is_finished:
             return scores
 
+        # 勝者以外のプレイヤの得点を決めつつ、勝者に渡す得点sum_scoreを計算。
         for i in range(consts.NUM_OF_PLAYERS):
             if len(self.player_hands[i]) == 0:
                 winner = i
                 continue
-            # TODO
-            score =
+            score = sum(card.to_score() for card in self.player_hands[i])
+            scores[i] = -score
+            sum_score += score
+        # 勝者は勝者以外のプレイヤに課された減点の総和を受け取る。
+        scores[winner] = sum_score
 
+        return scores
 
     def draw(self, player, quantity) -> None:
         """プレイヤにカードを引かせる。
