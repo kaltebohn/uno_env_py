@@ -76,4 +76,10 @@ class UnoEnv:
 
         self.state = next_state
         self.current_agent = self.state.current_player
+        # print(next_state.player_observation(self.current_agent))
+        print("====================")
+        for i in range(4):
+            print("----------------")
+            for card in self.state.player_hands[i]:
+                print(card)
         return self.current_agent, next_state.player_observation(self.current_agent), reward, done

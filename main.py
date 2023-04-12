@@ -9,7 +9,6 @@ current_agent_idx, observation = env.reset()
 
 while True:
     action = agents[current_agent_idx].get_action(observation)
-    print(action)
     current_agent_idx, next_observation, reward, done = env.step(action)
 
     if done:

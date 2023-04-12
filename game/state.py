@@ -31,7 +31,7 @@ class State:
         self.player_hands: list[list[Card]] = []
         for _ in range(consts.NUM_OF_PLAYERS):
             self.player_hands.append(self.deck[:consts.NUM_OF_FIRST_HAND])
-            del self.deck[:consts.NUM_OF_FIRST_HAND]
+            self.deck = self.deck[consts.NUM_OF_FIRST_HAND:]
 
         # 席順をシャッフルし、席0のプレイヤを最初のプレイヤとする。
         self.player_seats = list(range(consts.NUM_OF_PLAYERS))
@@ -48,7 +48,7 @@ class State:
             else:
                 self.update_table_card(tmp_card)
                 self.discards.append(tmp_card)
-                del self.deck[0]
+                self.deck = self.deck[1:]
                 break
 
         # 場のカードの効果を反映させる。
@@ -125,7 +125,7 @@ class State:
                 # 場のカードをチャレンジされたプレイヤに戻す。
                 next_state.player_hands[challenged_player].append(self.discards[-1])
                 next_state.update_table_card(prev_table_card)
-                del next_state.discards[-1]
+                next_state.discards = next_state.discards[:-1]
 
                 # チャレンジされたプレイヤに4枚引かせる。
                 next_state.draw(challenged_player, 4)
@@ -153,14 +153,14 @@ class State:
 
         # 以下提出の処理。
 
-        # 合法性の確認。違法な着手をする利点がないので、ここで止まったらプレイヤを修正するということで。
-        assert action in self.player_hands[self.current_player] and action.is_legal(self.table_card())
-
         # パスなら、カードを1枚引かせて、引いたカードの提出に移る。
         if action.is_empty():
             next_state.action_type = ActionType.SUBMISSION_OF_DRAWN_CARD
             next_state.draw(self.current_player, 1)
             return next_state
+
+        # 合法性の確認。違法な着手をする利点がないので、ここで止まったらプレイヤを修正するということで。
+        assert action in self.player_hands[self.current_player] and action.is_legal(self.table_card())
 
         # カードを場に出す。
         next_state.accept_submission(self.current_player, action)
@@ -294,21 +294,21 @@ class State:
         # 山札から必要分配れるならそのまま処理を返す。
         if quantity <= len(self.deck):
             self.player_hands[player] += self.deck[:quantity]
-            del self.deck[:quantity]
+            self.deck = self.deck[quantity:]
             return
 
         # まず、山札の残りをすべて配る。
         self.player_hands[player] += self.deck
         rest_quantity = quantity - len(self.deck)
-        del self.deck[:]
+        self.deck = []
 
         # 捨て札を山札に戻して、配る。
         self.reshuffle_deck_from_discard()
-        if len(self.deck < rest_quantity):
+        if len(self.deck) < rest_quantity:
             # 山札も捨て札も使い切る場合は手札を持ちすぎているプレイヤがいるので、そちらを何とかするべき。
             assert False
         self.player_hands[player] += self.deck[:rest_quantity]
-        del self.deck[:rest_quantity]
+        self.deck = self.deck[rest_quantity:]
 
     def next_player_of(self, player: int) -> int:
         """次の手番のプレイヤの番号。現在の席、周り順を考慮する。
@@ -334,7 +334,7 @@ class State:
 
         self.deck = self.discards
         self.random_engine.shuffle(self.deck)
-        del self.discards[:]
+        self.discards = []
 
     def change_turn_forward(self) -> None:
         """次のプレイヤに手番を移す。現在の席・周り順を考慮。prev_playerは「前に行動をしたプレイヤ」なのでここで変えない。
@@ -370,7 +370,7 @@ class State:
         assert card in self.player_hands[player]
 
         self.update_table_card(card)
-        self.discards.append(card)
+        self.discards.append(deepcopy(card))
         idx = self.player_hands[player].index(card)
         del self.player_hands[player][idx]
 
