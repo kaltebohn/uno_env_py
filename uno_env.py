@@ -14,7 +14,7 @@ class UnoEnv:
     def __init__(self):
         """ゲームの初期化。
         """
-        self.state = State(urandom(16)) # 128ビットの乱数を渡す。
+        self.state = State(urandom(16))  # 128ビットの乱数を渡す。
         self.current_agent = self.state.current_player
 
     def legal_actions(self) -> list:
@@ -76,10 +76,4 @@ class UnoEnv:
 
         self.state = next_state
         self.current_agent = self.state.current_player
-        # print(next_state.player_observation(self.current_agent))
-        print("====================")
-        for i in range(4):
-            print("----------------")
-            for card in self.state.player_hands[i]:
-                print(card)
         return self.current_agent, next_state.player_observation(self.current_agent), reward, done
