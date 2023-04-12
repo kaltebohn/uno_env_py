@@ -2,9 +2,9 @@ from __future__ import annotations
 from copy import deepcopy
 from random import Random
 
-from action_type import ActionType
-from card import Color, Number, Action, Card
-import consts
+from .action_type import ActionType
+from .card import Color, Number, Action, Card
+from . import consts
 
 
 class State:
@@ -25,7 +25,7 @@ class State:
         self.random_engine = Random(seed)
 
         # 山札を生成。
-        self.initialize_deck(True, self.random_engine)
+        self.initialize_deck(True)
 
         # 山札から手札を各プレイヤに配る。
         self.player_hands: list[list[Card]] = []
@@ -245,7 +245,7 @@ class State:
         """
         scores = [0 for _ in range(consts.NUM_OF_PLAYERS)]
         sum_score = 0
-        if not self.is_finished:
+        if not self.is_finished():
             return scores
 
         # 勝者以外のプレイヤの得点を決めつつ、勝者に渡す得点sum_scoreを計算。
@@ -280,7 +280,8 @@ class State:
             "prev_player": self.prev_player,
             "current_player": self.current_player,
             "is_normal_order": self.is_normal_order,
-            "table_card": self.table_card()
+            "table_card": self.table_card(),
+            "legal_actions": self.legal_actions() if player == self.current_player else []
         }
 
     def draw(self, player, quantity) -> None:
@@ -321,8 +322,8 @@ class State:
         if self.is_normal_order:
             next_seat = (self.player_seats[player] + 1) % consts.NUM_OF_PLAYERS
         else:
-            (self.player_seats[player] - 1 + consts.NUM_OF_PLAYERS) % consts.NUM_OF_PLAYERS
-        return self.player_seats(next_seat)
+            next_seat = (self.player_seats[player] - 1 + consts.NUM_OF_PLAYERS) % consts.NUM_OF_PLAYERS
+        return self.player_seats[next_seat]
 
     def reshuffle_deck_from_discard(self) -> None:
         """捨て札を山札に戻して山札を再構成する。
