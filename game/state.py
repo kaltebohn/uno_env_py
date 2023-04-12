@@ -8,6 +8,8 @@ import consts
 
 
 class State:
+    """UNOのある時点を表す状態。
+    """
     def __init__(self, seed=0) -> None:
         """ゲーム開始時の状態にする。
 
@@ -259,6 +261,28 @@ class State:
 
         return scores
 
+    def player_observation(self, player: int):
+        """特定のプレイヤにUNOのルール上見せられる情報を返す。
+
+        Args:
+            player (int): 情報を見るプレイヤ。
+
+        Returns:
+            dict: プレイヤに見せる情報。
+        """
+        return {
+            "discards": self.discards,
+            "player_hand": self.player_hands[player],
+            "player_hand_qtys": [len(hand) for hand in self.player_hands],
+            "player_seats": self.player_seats,
+            "player_scores": self.player_scores(),
+            "action_type": self.action_type,
+            "prev_player": self.prev_player,
+            "current_player": self.current_player,
+            "is_normal_order": self.is_normal_order,
+            "table_card": self.table_card()
+        }
+
     def draw(self, player, quantity) -> None:
         """プレイヤにカードを引かせる。
 
@@ -469,9 +493,9 @@ class State:
             Card.wild_draw_4(),
             Card.wild_draw_4(),
             Card.wild_shuffle_hands(),
-            Card.wild_customizable(),
-            Card.wild_customizable(),
-            Card.wild_customizable()
+            # Card.wild_customizable(),
+            # Card.wild_customizable(),
+            # Card.wild_customizable()
         ]
 
         if is_shuffled:
