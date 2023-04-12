@@ -2,7 +2,7 @@ import numpy as np
 
 
 class RandomAgent:
-    """ランダムな行動を取るだけのエージェント。
+    """ランダムな行動を取るだけのエージェント。パスやチャレンジもランダムに行うのでゲームが終わらない可能性がある。
     """
     def get_action(self, observation: dict):
         """行動を選ぶ。

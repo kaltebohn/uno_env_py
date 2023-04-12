@@ -1,11 +1,13 @@
 import json
 
 from game.consts import NUM_OF_PLAYERS
+from better_random_agent import BetterRandomAgent
 from random_agent import RandomAgent
 from uno_env import UnoEnv
 
 env = UnoEnv()
-agents = [RandomAgent() for _ in range(NUM_OF_PLAYERS)]
+# agents = [RandomAgent() for _ in range(NUM_OF_PLAYERS)]
+agents = [BetterRandomAgent() for _ in range(NUM_OF_PLAYERS)]
 
 current_agent_idx, observation = env.reset()
 
