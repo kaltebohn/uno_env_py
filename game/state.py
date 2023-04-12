@@ -193,11 +193,17 @@ class State:
             next_state.action_type = ActionType.COLOR_CHOICE
         elif action.action == Action.WILD_SHUFFLE_HANDS:
             # シャッフルワイルド: 色選択に移る。手札をまとめて次プレイヤから順に再分配。
+
+            # ゲームが終了していたら処理しない。
+            if self.is_finished():
+                return next_state
+
             next_state.action_type = ActionType.COLOR_CHOICE
 
             collected_cards = []
             for i in range(consts.NUM_OF_PLAYERS):
                 collected_cards += self.player_hands[i]
+                next_state.player_hands[i] = []
             self.random_engine.shuffle(collected_cards)
 
             player = self.next_player_of(self.current_player)
@@ -373,6 +379,27 @@ class State:
         self.discards.append(deepcopy(card))
         idx = self.player_hands[player].index(card)
         del self.player_hands[player][idx]
+
+    def to_dict(self) -> dict:
+        """uno_state_viewerに合わせた形式の辞書を返す。
+
+        Returns:
+            dict: 現在状態から生成した辞書。
+        """
+        return {
+            "deck": [str(card) for card in self.deck],
+            "discards": [str(card) for card in self.discards],
+            "playerCards": [[str(card) for card in player_hand] for player_hand in self.player_hands],
+            "playerSeats": self.player_seats,
+            "playerScores": self.player_scores(),
+            "currentMoveType": self.action_type.value,
+            "prevPlayer": self.prev_player,
+            "currentPlayer": self.current_player,
+            "isNormalOrder": self.is_normal_order,
+            "tableColor": self.table_color,
+            "tablePattern": self.table_number if self.table_number != Number.NONE else self.table_action,
+            "drawnCard": self.player_hands[self.current_player][-1]
+        }
 
     def initialize_deck(self, is_shuffled: bool) -> None:
         """UNOのルールに従った構成の山札を生成。

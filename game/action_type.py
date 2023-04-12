@@ -1,8 +1,11 @@
-from enum import auto, Enum
+from enum import Enum
 
 
 class ActionType(Enum):
-    CHALLENGE = auto()
-    COLOR_CHOICE = auto()
-    SUBMISSION = auto()
-    SUBMISSION_OF_DRAWN_CARD = auto()
+    CHALLENGE = "Challenge"
+    COLOR_CHOICE = "ColorChoice"
+    SUBMISSION = "Submission"
+    SUBMISSION_OF_DRAWN_CARD = "SubmissionOfDrawCard"
+
+    def __str__(self) -> str:
+        return f"{self.value}"

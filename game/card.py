@@ -39,13 +39,13 @@ class Action(Enum):
     """カードの記号。NONEは数字カード・パス。
     """
     NONE = 'None'
-    DRAW_TWO = 'Draw Two'
+    DRAW_TWO = 'DrawTwo'
     REVERSE = 'Reverse'
     SKIP = 'Skip'
     WILD = 'Wild'
-    WILD_DRAW_4 = 'Wild Draw 4'
-    WILD_SHUFFLE_HANDS = 'Wild Shuffle Hands'
-    WILD_CUSTOMIZABLE = 'Wild Customizable'
+    WILD_DRAW_4 = 'WildDraw4'
+    WILD_SHUFFLE_HANDS = 'WildShuffleHands'
+    WILD_CUSTOMIZABLE = 'WildCustomizable'
 
     def __str__(self) -> str:
         return f"{self.value}"
