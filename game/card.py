@@ -5,12 +5,15 @@ from enum import Enum
 class Color(Enum):
     """カードの色。NONEはパス。
     """
-    BLUE = 'Blue'
-    GREEN = 'Green'
-    RED = 'Red'
-    YELLOW = 'Yellow'
-    WILD = 'Wild'
     NONE = 'None'
+    BLUE = 'B'
+    GREEN = 'G'
+    RED = 'R'
+    YELLOW = 'Y'
+    WILD = 'W'
+
+    def __str__(self) -> str:
+        return f"{self.value}"
 
 
 class Number(Enum):
@@ -28,6 +31,9 @@ class Number(Enum):
     EIGHT = 8
     NINE = 9
 
+    def __str__(self) -> str:
+        return f"{self.value}"
+
 
 class Action(Enum):
     """カードの記号。NONEは数字カード・パス。
@@ -41,12 +47,23 @@ class Action(Enum):
     WILD_SHUFFLE_HANDS = 'Wild Shuffle Hands'
     WILD_CUSTOMIZABLE = 'Wild Customizable'
 
+    def __str__(self) -> str:
+        return f"{self.value}"
+
 
 class Card:
     def __init__(self, color: Color, number: Number, action: Action) -> None:
         self.color = color
         self.number = number
         self.action = action
+
+    def __str__(self) -> str:
+        if self.is_empty():
+            return "Empty"
+        elif self.number != Number.NONE:
+            return f"{self.color}-{self.number}"
+        else:
+            return f"{self.color}-{self.action}"
 
     def __eq__(self, value: Card) -> bool:
         return self.color == value.color and\
@@ -57,7 +74,9 @@ class Card:
         return not self == value
 
     def is_legal(self, table_card: Card) -> bool:
-        if self.color == Color.WILD:
+        if self.is_empty():
+            return True
+        elif self.color == Color.WILD:
             return True
         elif self.color == table_card.color:
             return True
