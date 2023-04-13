@@ -1,8 +1,8 @@
 import json
 
 from game.consts import NUM_OF_PLAYERS
-from better_random_agent import BetterRandomAgent
-from random_agent import RandomAgent
+from agent.better_random_agent import BetterRandomAgent
+from agent.random_agent import RandomAgent
 from uno_env import UnoEnv
 
 env = UnoEnv()
