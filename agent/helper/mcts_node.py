@@ -1,8 +1,8 @@
 from os import urandom
 import numpy as np
 import random
-from ...game.state import State
-from ...game.consts import NUM_OF_PLAYERS
+from game.state import State
+from game.consts import NUM_OF_PLAYERS
 
 
 class MCTSNode:
@@ -10,10 +10,11 @@ class MCTSNode:
     SEARCH_LIMIT = 100  # この値以上は探索しない。
     EVALUATION_MAX = 10000
 
-    def __init__(self, last_action, state: State, seed: int) -> None:
-        self.last_action = last_action
+    def __init__(self, state: State, seed: int, last_action=None) -> None:
         self.state = state
         self.random_engine = random.Random(seed)
+        self.last_action = last_action
+        self.children: list[MCTSNode] = []
 
         # 探索を通じて保持する、節点の評価値にかかわる値。
         self.visit_cnt = 0
@@ -69,7 +70,7 @@ class MCTSNode:
 
     def _expand(self):
         actions_and_next_states = [[action, self.state.next(action)] for action in self.state.legal_actions()]
-        self.children = [MCTSNode(action, next_state, urandom(16)) for action, next_state in actions_and_next_states]
+        self.children = [MCTSNode(next_state, urandom(16), action) for action, next_state in actions_and_next_states]
 
     def _playout(self):
         state = self.state

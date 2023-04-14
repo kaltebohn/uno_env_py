@@ -1,5 +1,6 @@
-import numpy as np
-from game.action_type import ActionType
+import os
+from .helper.mcts_node import MCTSNode
+from .helper.state_estimator import observation2state
 
 
 class MCTSAgent:
@@ -8,11 +9,8 @@ class MCTSAgent:
     def __init__(self):
         pass
 
-    def get_action(self, state):
-        pass
-
-    def get_action(self, state):
-        pass
+    def get_action(self, observation):
+        return MCTSNode(observation2state(observation), os.urandom(16)).search()
 
     def update(self, state, action, reward, done):
         pass
