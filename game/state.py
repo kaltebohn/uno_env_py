@@ -202,7 +202,7 @@ class State:
 
             collected_cards = []
             for i in range(NUM_OF_PLAYERS):
-                collected_cards += self.player_hands[i]
+                collected_cards += next_state.player_hands[i]  # 上で提出したカードが含まれないよう、手札は次状態から参照する。
                 next_state.player_hands[i] = []
             self.random_engine.shuffle(collected_cards)
 

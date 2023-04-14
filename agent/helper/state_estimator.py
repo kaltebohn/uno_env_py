@@ -4,7 +4,6 @@ from game.card import Card
 from game.consts import NUM_OF_PLAYERS
 from game.state import State
 
-
 def observation2state(observation):
     # わかっていない情報を推定。
     deck, player_hands = deal_randomly(observation["current_player"], observation["player_hand"], observation["discards"], observation["player_hand_qtys"])
